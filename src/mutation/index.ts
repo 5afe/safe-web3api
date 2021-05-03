@@ -1,17 +1,20 @@
 import {
   Ethereum_Mutation,
   Input_setData,
-  Input_deployContract
-} from "./w3";
-import { abi, bytecode } from "../contracts/SimpleStorage";
+  Input_deployContract,
+  Input_setIpfsData,
+  Ipfs_Mutation,
+  SetIpfsDataResult,
+} from "./w3"
+import { abi, bytecode } from "../contracts/SimpleStorage"
 
 export function setData(input: Input_setData): string {
   return Ethereum_Mutation.sendTransaction({
     address: input.address,
     method: "function set(uint256 value)",
     args: [input.value.toString()],
-    connection: input.connection
-  });
+    connection: input.connection,
+  })
 }
 
 export function deployContract(input: Input_deployContract): string {
@@ -19,6 +22,24 @@ export function deployContract(input: Input_deployContract): string {
     abi,
     bytecode,
     args: null,
-    connection: input.connection
-  });
+    connection: input.connection,
+  })
+}
+
+export function setIpfsData(input: Input_setIpfsData): SetIpfsDataResult {
+  const ipfsHash = Ipfs_Mutation.addFile({
+    data: String.UTF8.encode(input.options.data),
+  })
+
+  const txReceipt = Ethereum_Mutation.sendTransaction({
+    address: input.options.address,
+    method: "function setHash(string value)",
+    args: [ipfsHash],
+    connection: input.connection,
+  })
+
+  return {
+    ipfsHash,
+    txReceipt,
+  }
 }
