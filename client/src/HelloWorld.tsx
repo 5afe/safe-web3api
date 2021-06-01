@@ -5,12 +5,12 @@ export const HelloWorld: React.FC = () => {
   const [message, setMessage] = React.useState("");
 
   const query = {
-    uri: "ens/helloworld.web3api.eth",
-    query: `query { 
-        logMessage(
-            message: "${message}"
-        )
-     }`,
+    uri: "ens/safe.gnosis.eth",
+    query: `query {
+      getOwners(
+        safeContract: "0x...."
+      )
+    }`,
   };
 
   const { execute } = useWeb3ApiQuery(query);
