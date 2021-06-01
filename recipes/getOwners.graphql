@@ -1,0 +1,8 @@
+query {
+  getOwners(
+    safeContract: $safeContract
+    connection: {
+      networkNameOrChainId: $network
+    }
+  )
+}

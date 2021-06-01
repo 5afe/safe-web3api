@@ -1,28 +1,48 @@
 import {
   Ethereum_Query,
-  Input_getData,
-  Input_getIpfsData,
-  Ipfs_Query,
+  Input_getOwners,
+  // Input_createTransaction,
+  SafeTransaction,
+  OperationType
 } from "./w3"
 
-export function getData(input: Input_getData): u32 {
+export function getOwners(input: Input_getOwners): string[] {
   const res = Ethereum_Query.callView({
-    address: input.address,
-    method: "function get() view returns (uint256)",
+    address: input.safeContract,
+    method: "function getOwners() view returns (address[])",
     args: null,
     connection: input.connection,
-  })
+  });
 
-  return U32.parseInt(res)
+  return res.split(",");
 }
 
-export function getIpfsData(input: Input_getIpfsData): string {
-  const hash = Ethereum_Query.callView({
-    address: input.address,
-    method: "function getHash() view returns (string)",
-    args: null,
-    connection: input.connection,
-  })
+// TODO: WIP, need to finish port
+/*export function createTransaction(input: Input_createTransaction): SafeTransaction {
+  const safeTransactions = input.safeTransactions;
+  const safeContract = input.safeContract;
 
-  return String.UTF8.decode(Ipfs_Query.catFile({ cid: hash }))
-}
+  if (safeTransactions.length === 1) {
+    const standardizedTransaction = standardizeSafeTransactionData(
+      safeContract,
+      safeTransactions[0]
+    )
+    return new SafeTransaction(standardizedTransaction)
+  }
+  const multiSendData = encodeMultiSendData(
+    safeTransactions.map(standardizeMetaTransactionData)
+  );
+  const multiSendTransaction = {
+    to: multiSendContract,
+    value: '0',
+    data: multiSendContract.interface.encodeFunctionData('multiSend', [
+      multiSendData
+    ]),
+    operation: OperationType.DelegateCall
+  }
+  const standardizedTransaction = await standardizeSafeTransactionData(
+    safeContract,
+    multiSendTransaction
+  )
+  return new SafeTransaction(standardizedTransaction)
+}*/

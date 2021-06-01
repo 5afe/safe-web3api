@@ -1,8 +1,61 @@
 #import { Query, Connection } into Ethereum from "w3://ens/ethereum.web3api.eth"
-#import { Query } into Ipfs from "w3://ens/ipfs.web3api.eth"
 
 type Query {
-  getData(address: String!, connection: Ethereum_Connection): Int!
+  getOwners(
+    safeContract: String!
+    connection: Ethereum_Connection
+  ): [String!]!
 
-  getIpfsData(address: String!, connection: Ethereum_Connection): String!
+# TODO: WIP, uncomment when implementation port is finished
+#  createTransaction(
+#    safeContract: String!
+#    safeTransactions: [SafeTransactionDataPartial!]!
+#  ): SafeTransaction!
+
+}
+
+enum OperationType {
+  Call
+  DelegateCall
+}
+
+type SafeTransactionDataPartial {
+  to: String!
+  value: String!
+  data: String!
+  operation: OperationType
+  safeTxGas: UInt32
+  baseGas: UInt32
+  gasPrice: UInt32
+  gasToken: String
+  refundReceiver: String
+  nonce: UInt32
+}
+
+type SafeTransactionData {
+  to: String!
+  value: String!
+  data: String!
+  operation: OperationType
+  safeTxGas: UInt32!
+  baseGas: UInt32!
+  gasPrice: UInt32!
+  gasToken: String!
+  refundReceiver: String!
+  nonce: UInt32!
+}
+
+type SafeSignature {
+  signer: String!
+  data: String!
+}
+
+type SafeTransaction {
+  data: SafeTransactionData!
+  signatures: [SignerSafeSignature!]!
+}
+
+type SignerSafeSignature {
+  signer: String!
+  signature: SafeSignature!
 }
